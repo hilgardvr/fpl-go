@@ -1,0 +1,64 @@
+<html>
+    <head>
+        <title>go-fpl</title>
+        <link rel="stylesheet" href="https://cdn.simplecss.org/simple.min.css">
+    </head>
+    <body>
+        <form method="POST" action="/filter">
+            <div>
+                <label>Filter by player type:</label>
+                <input type="radio" name="playerType" value="all" checked="checked"><label>All Players</label>
+                <input type="radio" name="playerType" value="keeper"><label>Keepers</label>
+                <input type="radio" name="playerType" value="defender"><label>Defenders</label>
+                <input type="radio" name="playerType" value="midfielder"><label>Midfielders</label>
+                <input type="radio" name="playerType" value="forward"><label>Forwards</label>
+            </div>
+            <div>
+                <label>Sort by:</label>
+                <input type="radio" name="sortBy" value="default" checked="checked"><label>Default</label>
+                <input type="radio" name="sortBy" value="name"><label>Name</label>
+                <input type="radio" name="sortBy" value="price"><label>Price</label>
+                <input type="radio" name="sortBy" value="totalPoints"><label>TP</label>
+                <input type="radio" name="sortBy" value="totalPointsPerMillion"><label>TPPM</label>
+                <input type="radio" name="sortBy" value="pointsPerGame"><label>PPG</label>
+                <input type="radio" name="sortBy" value="allTimePoints"><label>ATP</label>
+                <input type="radio" name="sortBy" value="allTimeMinutesPlayed"><label>ATMP</label>
+                <input type="radio" name="sortBy" value="allTimePointsPer90"><label>ALPP90</label>
+                <input type="radio" name="sortBy" value="allTimePointsPer90PerMillion"><label>ATPP90PM</label>
+            </div>
+            <button>Submit</button>
+        </form>
+        <table>
+            <thead>
+                <tr>
+                    <th>Name:</th>
+                    <th>Price</th>
+                    <th>Total Points</th>
+                    <th>Total Points PM</th>
+                    <th>PPG</th>
+                    <th>PPGPM</th>
+                    <th>All Time Points</th>
+                    <th>All Time Minutes</th>
+                    <th>All Time PP90</th>
+                    <th>All Time PP90PM</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{ range $player := .Players }}
+                <tr>
+                    <td>{{ $player.SeasonStats.Name }}</td>
+                    <td>{{ $player.SeasonStats.Price }}</td>
+                    <td>{{ $player.SeasonStats.TotalPoints }}</td>
+                    <td>{{ $player.SeasonStats.TotalPointsPerMillion }}</td>
+                    <td>{{ $player.SeasonStats.PointsPerGame }}</td>
+                    <td>{{ $player.SeasonStats.PointsPerGamePerMillion }}</td>
+                    <td>{{ $player.AllTimePoints }}</td>
+                    <td>{{ $player.AllTimeMinutesPlayed }}</td>
+                    <td>{{ $player.AllTimePointsPer90 }}</td>
+                    <td>{{ $player.AllTimePointsPer90PerMillion }}</td>
+                </tr>
+                {{ end }}
+            </tbody>
+        </table>
+    </body>
+</html>
