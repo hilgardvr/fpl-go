@@ -1,7 +1,6 @@
 package service
 
 import (
-	"fmt"
 	"hilgardvr/go-fpl/clients"
 	"log"
 	"math"
@@ -47,14 +46,13 @@ func getPlayerHistory(playerId int) (allTimePlayerDetail, error) {
 		pastHistoryTotal.allTimeMinutesPlayed += detail.Minutes
 		pastHistoryTotal.allTimePoints += detail.TotalPoints
 	}
-	fmt.Println(pastHistoryTotal.allTimePoints)
 	return pastHistoryTotal, nil
 }
 
 func buildAllPlayerStats(bootstrapResponse clients.BootstrapResponse) error {
 	var ctr int
 	for _, player := range bootstrapResponse.Elements {
-		if ctr >= 5 {
+		if ctr >= 800 {
 			break
 		}
 		ctr++
@@ -108,11 +106,13 @@ func InitAllPlayerStats() error {
 	if len(allPlayersAllTime) > 0 {
 		return nil
 	}
+	log.Println("Fetching bootstrap data")
 	bootstrapData, err := clients.BootstrapData()
 	if err != nil {
 		log.Println("Failed to bootstrap data:", err)
 		return err
 	}
+	log.Println("Done bootstrap data")
 	err = buildAllPlayerStats(bootstrapData)
 	if err != nil {
 		log.Println("Failed to build data:", err)
@@ -148,7 +148,6 @@ func filterByPlayerType(playerType PlayerType) []PlayerStatsAllTime {
 	var filtered []PlayerStatsAllTime
 	for _, v := range allPlayersAllTime {
 		if playerType == v.SeasonStats.PlayerType {
-			fmt.Println(v)
 			filtered = append(filtered, v)
 		}
 	}
@@ -162,6 +161,38 @@ func sortBySelection(sortBy SortBy, players []PlayerStatsAllTime) []PlayerStatsA
 			return players[i].SeasonStats.Price > players[j].SeasonStats.Price
 		})
 		return players
+	case TotalPoints:
+		sort.Slice(players, func(i, j int) bool {
+			return players[i].SeasonStats.TotalPoints > players[j].SeasonStats.TotalPoints
+		})
+	case TotalPointsPerMillion:
+		sort.Slice(players, func(i, j int) bool {
+			return players[i].SeasonStats.TotalPointsPerMillion > players[j].SeasonStats.TotalPointsPerMillion
+		})
+	case PointsPerGame:
+		sort.Slice(players, func(i, j int) bool {
+			return players[i].SeasonStats.PointsPerGame > players[j].SeasonStats.PointsPerGame
+		})
+	case PointsPerGamePerMillion:
+		sort.Slice(players, func(i, j int) bool {
+			return players[i].SeasonStats.PointsPerGamePerMillion > players[j].SeasonStats.PointsPerGamePerMillion
+		})
+	case AllTimePoints:
+		sort.Slice(players, func(i, j int) bool {
+			return float64(players[i].AllTimePoints) > float64(players[j].AllTimePoints)
+		})
+	case AllTimeMinutesPlayed:
+		sort.Slice(players, func(i, j int) bool {
+			return float64(players[i].AllTimeMinutesPlayed) > float64(players[j].AllTimeMinutesPlayed)
+		})
+	case AllTimePointsPer90:
+		sort.Slice(players, func(i, j int) bool {
+			return players[i].AllTimePointsPer90 > players[j].AllTimePointsPer90
+		})
+	case AllTimePointsPer90PerMillion:
+		sort.Slice(players, func(i, j int) bool {
+			return players[i].AllTimePointsPer90PerMillion > players[j].AllTimePointsPer90PerMillion
+		})
 	}
 	return players
 }

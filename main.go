@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fmt"
 	"hilgardvr/go-fpl/controllers"
 	"hilgardvr/go-fpl/service"
 	"log"
@@ -16,6 +15,6 @@ func main() {
 	}
 	http.HandleFunc("/", controllers.Index)
 	http.HandleFunc("/filter", controllers.Filter)
-	fmt.Println("server listing on port 9000")
+	log.Println("server listing on port 9000")
 	log.Fatal(http.ListenAndServe(":9000", nil))
 }
